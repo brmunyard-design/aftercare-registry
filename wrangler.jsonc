@@ -10,8 +10,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "aftercare-registry-db",
-      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+      "database_name": "aftercare-registry-live",
+      "database_id": "19f619ce-c7c8-44e7-8ce9-9404eb8f339f"
     }
   ]
 }

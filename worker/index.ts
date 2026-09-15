@@ -28,6 +28,49 @@ async function body<T>(request: Request): Promise<T> {
   return request.json() as Promise<T>;
 }
 
+let schemaReady = false;
+
+async function ensureSchema(db: D1Database) {
+  if (schemaReady) return;
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS registries (
+      id TEXT PRIMARY KEY,
+      slug TEXT UNIQUE NOT NULL,
+      family_name TEXT NOT NULL,
+      family_message TEXT DEFAULT '',
+      admin_token TEXT UNIQUE NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS tasks (
+      id TEXT PRIMARY KEY,
+      registry_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      category TEXT DEFAULT 'Practical help',
+      status TEXT NOT NULL DEFAULT 'open',
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (registry_id) REFERENCES registries(id) ON DELETE CASCADE
+    )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS commitments (
+      id TEXT PRIMARY KEY,
+      task_id TEXT NOT NULL,
+      supporter_name TEXT NOT NULL,
+      supporter_contact TEXT DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'offered',
+      availability TEXT DEFAULT '',
+      note TEXT DEFAULT '',
+      recovery_code TEXT UNIQUE NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+    )`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_tasks_registry ON tasks(registry_id)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_commitments_task ON commitments(task_id)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_commitments_code ON commitments(recovery_code)`),
+  ]);
+  schemaReady = true;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     if (request.method === "OPTIONS") return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-methods": "GET,POST,PATCH,OPTIONS", "access-control-allow-headers": "Content-Type" } });
@@ -36,6 +79,14 @@ export default {
     const path = url.pathname.replace(/\/+$/, "");
 
     try {
+      if (path.startsWith("/api/")) {
+        await ensureSchema(env.DB);
+      }
+
+      if (path === "/api/health" && request.method === "GET") {
+        return json({ ok: true, database: "aftercare-registry-live" });
+      }
+
       if (path === "/api/registries" && request.method === "POST") {
         const input = await body<{ familyName: string; message?: string; tasks?: { title: string; description?: string; category?: string }[] }>(request);
         if (!input.familyName?.trim()) return json({ error: "Family name is required." }, { status: 400 });
