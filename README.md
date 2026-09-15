@@ -2,6 +2,18 @@
 
 This is a Cloudflare Workers + React/Vite + D1 version of the Aftercare Registry concept.
 
+## Repository layout
+
+Upload the contents of this package directly to the repository root. The files
+Cloudflare needs are deliberately at these root-relative paths:
+
+```
+src/              # React/Vite client
+worker/index.ts   # Cloudflare Worker API entry point
+db/schema.sql     # D1 schema
+wrangler.jsonc    # Worker and D1 configuration
+```
+
 ## What is included
 
 - Public landing page
