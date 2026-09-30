@@ -1,0 +1,11 @@
+name = "aftercare-registry-pilot"
+compatibility_date = "2025-09-01"
+pages_build_output_dir = "./public"
+
+[[d1_databases]]
+binding = "DB"
+# This is the database already provisioned in the Cloudflare account (created 15 Sep, via a
+# separate session) — its schema has been brought up to date to match schema.sql in this repo,
+# so there's no need to run `wrangler d1 create` again.
+database_name = "aftercare-registry-live"
+database_id = "19f619ce-c7c8-44e7-8ce9-9404eb8f339f"

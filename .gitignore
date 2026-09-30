@@ -1,9 +1,4 @@
 node_modules/
-dist/
 .wrangler/
 .dev.vars
-.env
-.env.*
-!.env.example
-*.tsbuildinfo
-
+public/vendor/qrcode.js

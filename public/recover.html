@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Specific help, on a specific day, without making a grieving family organise it.">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Aftercare Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..600&display=swap">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<main>
+  <p class="kicker">Supporter access</p>
+  <h1>Find my commitment</h1>
+  <p>Enter the phone number or email and recovery code shown when you offered to help. No account is needed.</p>
+  <form id="recover" novalidate>
+    <div class="field">
+      <label for="contact">Phone number or email used</label>
+      <input id="contact" name="contact" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+    </div>
+    <div class="field">
+      <label for="code">Recovery code</label>
+      <input id="code" name="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+    </div>
+    <p id="msg" class="error" role="alert" hidden></p>
+    <button class="btn" type="submit">Find commitment</button>
+  </form>
+  <p class="actions"><a href="/">Back</a></p>
+</main>
+<script src="/site.js"></script>
+<script src="/recover.js"></script>
+</body>
+</html>
